@@ -1,3 +1,14 @@
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+String.prototype.capitalize = function(){
+    return this.toLowerCase().replace( /\b\w/g, function (m) {
+        return m.toUpperCase();
+    });
+};
+
 var moviApp = angular.module("moviApp", ['ngRoute', 'ngResource']);
 
 moviApp.config(function ($routeProvider)
@@ -49,17 +60,22 @@ moviApp.controller('movieController', ['$scope', '$http', function ($scope, $htt
 
 moviApp.controller('artistController', ['$scope', '$http', function ($scope, $http)
 {
-    $scope.artist = '';
-
-
+    $scope.catagory = '';
+    $scope.question = '';
+    $scope.answer = '';
     $("#SpecBut2").click(function() {
-        console.log($scope.artist);
-        $http.get('http://lyrics.wikia.com/api.php?func=getArtist&artist='+ $scope.artist.replace(' ', '+') +'&fmt=realjson')
+        $http.get('http://jservice.io/api/random')
             .success(function (result) {
-                $scope.albums = result.albums;
+                document.getElementById("an").style.visibility = "hidden";
+                $scope.category = result[0].category.title.capitalize();
+                $scope.question = result[0].question;
+                $scope.answer = result[0].answer.replace("<i>", "").replace("</i>", "");
             })
             .error(function (data, status) {
                 console.log("Error!");
             });
+    });
+    $("#SpecBut3").click(function() {
+        document.getElementById("an").style.visibility = "visible";
     });
 }]);
